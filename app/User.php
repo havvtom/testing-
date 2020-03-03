@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Team;
+use App\Team;
 
 class User extends Authenticatable
 {
@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','team_id'
+        'name', 'email', 'password', 'team_id'
     ];
 
     /**
@@ -35,11 +35,21 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'email_verified_at' => 'datetime', 'team_id'
     ];
 
     public function team(){
 
         return $this->belongsTo(Team::class);
+    }
+
+    public function path(){
+
+        return '/teams/'.$this->team->id.'/'.$this->id;
+    }
+
+    public function leaveTeam(){
+        // dd('really');
+        return $this->update(['team_id' => null]);
     }
 }

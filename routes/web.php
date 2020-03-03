@@ -14,3 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::delete('/teams/{team}/{user}', 'TeamController@destroy');
+
+Route::delete('/teams/{team}', 'TeamController@delete');

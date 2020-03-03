@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Traits;
+use App\Like;
 
 trait Likeability{
 

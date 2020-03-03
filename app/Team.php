@@ -7,27 +7,23 @@ use App\User;
 
 class Team extends Model
 {
-   protected $fillable = ['name', 'size', ''];
+   protected $fillable = ['name', 'size',];
 
    public function members(){
 
    	return $this->hasMany(User::class);
    }
 
-   public function addUser($user){
+   public function addUser($users){
 
-      $this->guardAgainstTooManyUsers();
+      $this->guardAgainstTooManyUsers($users);
 
-      if($user instanceOf User){
+      if($users instanceOf User){
             
-            return $this->members()->save($user);
+            return $this->members()->save($users);
 
          }else{
-
-            foreach($user as $member){
-               $this->guardAgainstTooManyUsers();
-               return $this->members()->save($member);
-            }
+         	return $this->members()->saveMany($users);
          }
 
    }
@@ -37,9 +33,15 @@ class Team extends Model
    	return count($this->members);
    }
 
-   public function guardAgainstTooManyUsers(){
+   public function guardAgainstTooManyUsers($users){
 
-      if($this->count() >= $this->size){
+   	$numberOfUsersToAdd = $users instanceOf User ? 1 : $users->count();
+
+   	$numberOfUsers = 0; 
+
+   	$numberOfUsers = $this->count() + $numberOfUsersToAdd;
+
+      if($numberOfUsers >= $this->size){
 
         throw new \Exception;
       }

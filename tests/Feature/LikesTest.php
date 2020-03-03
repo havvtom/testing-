@@ -14,6 +14,16 @@ class LikesTest extends TestCase
      *
      * @return void
      */
+    protected $post;
+
+    public function setUp() :void{
+
+        parent::setUp();
+        $this->post = factory(\App\Post::class)->create();
+
+        $this->signIn();
+    }
+
     public function testExample()
     {
         $response = $this->get('/');
@@ -24,19 +34,19 @@ class LikesTest extends TestCase
     public function test_a_user_can_like_a_post(){
 
         //given we have a post
-        $post = factory(\App\Post::class)->create();
+       
         //we have a signed in user
-        $this->actingAs($user = factory(\App\User::class)->create());
+       
         //user likes the model
-        $post->likes();
+        $this->post->likes();
         //database should show
         $this->assertDatabaseHas('likes', [
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'likeable_type' => \App\Post::class,
-            'likeable_id' => $post->id
+            'likeable_id' => $this->post->id
         ]);
 
-        $this->assertTrue($post->isLiked());
+        $this->assertTrue($this->post->isLiked());
 
         
     }
@@ -44,43 +54,40 @@ class LikesTest extends TestCase
     public function test_a_user_can_unlike_a_post(){
 
         //given we have a post
-        $post = factory(\App\Post::class)->create();
+        
         //we have a signed in user
-        $this->actingAs($user = factory(\App\User::class)->create());
+        
         //user likes the model
-        $post->likes();
+        $this->post->likes();
 
-        $post->unlike();
+        $this->post->unlike();
 
-        $this->assertFalse($post->isLiked());
+        $this->assertFalse($this->post->isLiked());
 
     }
 
     public function test_a_user_can_toggle_posts(){
 
         //given we have a post
-        $post = factory(\App\Post::class)->create();
+        
         //we have a signed in user
-        $this->actingAs($user = factory(\App\User::class)->create());
+        
         //user likes the model
-        $post->toggle();
+        $this->post->toggle();
 
-        $this->assertTrue($post->isLiked());
+        $this->assertTrue($this->post->isLiked());
 
-        $post->toggle();
+        $this->post->toggle();
 
-        $this->assertFalse($post->isLiked());
+        $this->assertFalse($this->post->isLiked());
     }
 
     public function test_it_knows_how_many_likes_it_has(){
 
-        $post = factory(\App\Post::class)->create();
 
-        $this->actingAs($user = factory(\App\User::class)->create());
-
-        $post->likes();
+        $this->post->likes();
         
-        $this->assertEquals(1, $post->likesCount);
+        $this->assertEquals(1, $this->post->likesCount);
 
     }
 }
